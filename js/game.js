@@ -52,6 +52,11 @@ export class Game {
 	animate() {
 		requestAnimationFrame(this.animate.bind(this));
 
+		if(!localStorage.username) {
+			const userName = prompt('Please enter name.');
+			localStorage.setItem('username', userName);
+		}
+
 		this.ctx.clearRect(0, 0, this.width, this.height);
 
 		this.paddle.moveLeft();
@@ -124,7 +129,7 @@ export class Game {
 						this.score += this.scoreInterval;
 
 						if (this.score === this.bricks.rows * this.bricks.columns * this.scoreInterval + this.cumulativeScore) {
-							alert(`🎊 CONGRATULATIONS! 🥳\n Stage ${this.stage} clear!`);
+							alert(`🎊 CONGRATULATIONS, ${localStorage.username}! 🥳\n Stage ${this.stage} clear!`);
 
 							this.cumulativeScore = this.score;
 
