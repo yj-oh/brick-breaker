@@ -50,10 +50,10 @@ export class Game {
 	}
 
 	animate() {
-		requestAnimationFrame(this.animate.bind(this));
+		this.frame = requestAnimationFrame(this.animate.bind(this));
 
 		if(!localStorage.username) {
-			const userName = prompt('Please enter name.');
+			const userName = prompt('Please enter name.') ?? 'anonymous';
 			localStorage.setItem('username', userName);
 		}
 
@@ -97,7 +97,21 @@ export class Game {
 
 				if(this.lives === 0) {
 					alert(`🔥 GAME OVER! 🔥\n Your score : ${this.score}`);
-					document.location.reload();
+
+					cancelAnimationFrame(this.frame);
+
+					const maxRanking = 5;
+
+					let ranking = localStorage.ranking ? JSON.parse(localStorage.ranking) : [];
+					ranking.push(this.score);
+					ranking.sort(function(a, b) { return b - a; });
+
+					if(ranking.length > maxRanking) {
+						ranking = ranking.slice(0, maxRanking);
+					}
+					localStorage.setItem('ranking', JSON.stringify(ranking));
+
+					this.drawRanking(ranking);
 
 				} else {
 					this.ball.init(this.ballSpeed);
@@ -181,6 +195,32 @@ export class Game {
 			this.bricks.paddingLeft / 2,
 			this.bricks.paddingTop / 2
 		);
+	}
+
+	drawRanking(ranking) {
+		this.img = new Image();
+		this.img.onload = () => {
+			this.ctx.beginPath();
+			this.ctx.fillStyle = '#282828';
+			this.ctx.fillRect(0, 0, this.width, this.height);
+			this.ctx.drawImage(this.img, 0, 0, this.width, this.height);
+
+			const x = 200;
+			const y = 80;
+			const gap = 57;
+
+			this.ctx.font = 'bold 20px JetBrains Mono';
+			this.ctx.fillStyle = '#242424';
+
+			const username = localStorage.username;
+
+			for(let i = 0; i < ranking.length; i++) {
+				this.ctx.fillText(`${username}  ${ranking[i]}`, x, y + gap * i);
+			}
+
+			this.ctx.closePath();
+		}
+		this.img.src = './images/ranking.png';
 	}
 
 	onKeydown(e) {
