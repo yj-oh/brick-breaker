@@ -11,6 +11,7 @@ export class Game {
 		this.height = height ?? this.canvas.style.height.replace('px', '');
 
 		this.lives = 3;
+		this.stage = 1;
 		this.score = 0;
 		this.scoreInterval = 10;
 
@@ -50,6 +51,8 @@ export class Game {
 
 		this.paddle.moveLeft();
 		this.paddle.moveRight();
+
+		this.drawStage();
 
 		this.bricks.draw(this.ctx);
 		this.paddle.draw(this.ctx);
@@ -123,6 +126,12 @@ export class Game {
 				}
 			}
 		}
+	}
+
+	drawStage() {
+		this.ctx.font = 'bold 30px JetBrains Mono';
+		this.ctx.fillStyle = '#c6c6c6';
+		this.ctx.fillText(`Stage ${this.stage}`, this.width / 2 - 60, this.height / 2 + 70);
 	}
 
 	drawScore() {
