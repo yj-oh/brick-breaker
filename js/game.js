@@ -14,13 +14,18 @@ export class Game {
 		this.stage = 1;
 		this.score = 0;
 		this.scoreInterval = 10;
+		this.cumulativeScore = 0;
 
-		this.bricks = new Brick(this.canvas.width);
+		this.rows = 4;
+		this.columns = 6;
+		this.ballSpeed = 5;
+
+		this.bricks = new Brick(this.canvas.width, this.rows, this.columns);
 		this.paddle = new Paddle(this.canvas.width, this.canvas.height);
 		this.ball = new Ball(
 			(this.canvas.width - 10) / 2,
 			(this.canvas.height - 10) - (this.paddle.height * 2),
-			5,
+			this.ballSpeed,
 			10,
 			'#f54141',
 		);
@@ -90,7 +95,7 @@ export class Game {
 					document.location.reload();
 
 				} else {
-					this.ball.init();
+					this.ball.init(this.ballSpeed);
 					this.ball.draw(this.ctx);
 					this.paddle.x = (this.width - this.paddle.width) / 2;
 				}
@@ -118,9 +123,27 @@ export class Game {
 						brick.status = 0;
 						this.score += this.scoreInterval;
 
-						if (this.score === this.bricks.rows * this.bricks.columns * this.scoreInterval) {
-							alert('🎊 CONGRATULATIONS! 🥳\n');
-							document.location.reload();
+						if (this.score === this.bricks.rows * this.bricks.columns * this.scoreInterval + this.cumulativeScore) {
+							alert(`🎊 CONGRATULATIONS! 🥳\n Stage ${this.stage} clear!`);
+
+							this.cumulativeScore = this.score;
+
+							this.stage++;
+
+							if(this.rows < 7 && this.stage % 2 === 0) {
+								this.rows++;
+							} else if(this.columns < 10 && this.stage % 2 === 1) {
+								this.columns++;
+							} else {
+								this.ballSpeed++;
+							}
+
+							this.bricks = new Brick(this.canvas.width, this.rows, this.columns);
+							this.bricks.resize();
+							this.bricks.initBricks();
+							this.bricks.draw(this.ctx);
+
+							this.ball.init(this.ballSpeed);
 						}
 					}
 				}
