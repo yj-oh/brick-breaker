@@ -22,11 +22,11 @@ export class Ball {
 		this.y = this.y / 2;
 	}
 
-	init() {
+	init(speed) {
 		this.x = this.absoluteX;
 		this.y = this.absoluteY;
-		this.moveX = this.speed;
-		this.moveY = this.speed;
+		this.moveX = speed ?? this.speed;
+		this.moveY = speed ?? this.speed;
 		this.resize();
 	}
 
