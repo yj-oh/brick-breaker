@@ -91,7 +91,7 @@ export class Game {
 				this.lives--;
 
 				if(this.lives === 0) {
-					alert('🔥 GAME OVER! 🔥\n' + this.score + '점');
+					alert(`🔥 GAME OVER! 🔥\n Your score : ${this.score}`);
 					document.location.reload();
 
 				} else {
