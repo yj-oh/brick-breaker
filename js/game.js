@@ -206,8 +206,16 @@ export class Game {
 			this.ctx.fillStyle = '#242424';
 
 			getRanking().then((data) => {
+				let showTag = true;
+
 				for(let i = 0; i < data.length; i++) {
-					this.ctx.fillText(`${data[i].username}  ${data[i].score}`, x, y + gap * i);
+					let tag = '';
+
+					if(showTag && data[i].username === localStorage.getItem('username') && data[i].score === this.score) {
+						tag = '🔥';
+						showTag = false;
+					}
+					this.ctx.fillText(`${data[i].username}  ${data[i].score}  ${tag}`, x, y + gap * i);
 				}
 			});
 
