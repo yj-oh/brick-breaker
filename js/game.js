@@ -20,14 +20,15 @@ export class Game {
 		this.rows = 4;
 		this.columns = 6;
 		this.ballSpeed = 5;
+		this.ballRadius = 10;
 
 		this.bricks = new Brick(this.canvas.width, this.rows, this.columns);
 		this.paddle = new Paddle(this.canvas.width, this.canvas.height);
 		this.ball = new Ball(
-			(this.canvas.width - 10) / 2,
-			(this.canvas.height - 10) - (this.paddle.height * 2),
+			(this.canvas.width) / 2,
+			(this.canvas.height - this.ballRadius * 2) - (this.paddle.height * 2),
 			this.ballSpeed,
-			10,
+			this.ballRadius,
 			'#f54141',
 		);
 
