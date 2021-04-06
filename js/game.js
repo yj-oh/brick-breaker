@@ -1,6 +1,7 @@
 import { Brick } from './brick.js';
 import { Paddle } from './paddle.js';
 import { Ball } from './ball.js';
+import { getRanking, setRanking } from "../firebase.js";
 
 export class Game {
 	constructor(width, height) {
@@ -100,18 +101,9 @@ export class Game {
 
 					cancelAnimationFrame(this.frame);
 
-					const maxRanking = 5;
-
-					let ranking = localStorage.ranking ? JSON.parse(localStorage.ranking) : [];
-					ranking.push(this.score);
-					ranking.sort(function(a, b) { return b - a; });
-
-					if(ranking.length > maxRanking) {
-						ranking = ranking.slice(0, maxRanking);
-					}
-					localStorage.setItem('ranking', JSON.stringify(ranking));
-
-					this.drawRanking(ranking);
+					setRanking(localStorage.username, this.score).then(() => {
+						this.drawRanking();
+					});
 
 				} else {
 					this.ball.init(this.ballSpeed);
@@ -197,7 +189,7 @@ export class Game {
 		);
 	}
 
-	drawRanking(ranking) {
+	drawRanking() {
 		this.img = new Image();
 		this.img.onload = () => {
 			this.ctx.beginPath();
@@ -212,11 +204,11 @@ export class Game {
 			this.ctx.font = 'bold 20px JetBrains Mono';
 			this.ctx.fillStyle = '#242424';
 
-			const username = localStorage.username;
-
-			for(let i = 0; i < ranking.length; i++) {
-				this.ctx.fillText(`${username}  ${ranking[i]}`, x, y + gap * i);
-			}
+			getRanking().then((data) => {
+				for(let i = 0; i < data.length; i++) {
+					this.ctx.fillText(`${data[i].username}  ${data[i].score}`, x, y + gap * i);
+				}
+			});
 
 			this.ctx.closePath();
 		}
