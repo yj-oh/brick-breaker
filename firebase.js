@@ -16,6 +16,7 @@ export const getRanking = async () => {
 
 	await db.collection(collectionName)
 		.orderBy('score', 'desc')
+		.orderBy('createdAt', 'desc')
 		.limit(5)
 		.get()
 		.then((querySnapshot) => {
@@ -34,5 +35,6 @@ export const setRanking = async (username, score) => {
 		.add({
 			username: username,
 			score: score,
+			createdAt: new Date().getTime(),
 		});
 }
